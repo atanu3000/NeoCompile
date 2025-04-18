@@ -1,20 +1,18 @@
 import express from 'express';
+import dotenv from 'dotenv';
+
+// Environment Variables
+dotenv.config();
+
 const app = express();
-const PORT = 3000;
 
-// Default route
-app.get('/', (req, res) => {
-  res.send('Welcome to the Home Page!');
-});
-// About er route
-app.get('/about', (req, res) => {
-  res.send('This is the About Page.');
-});
+import router from './routes/routes.js';
 
-// Contact route
-app.get('/contact', (req, res) => {
-  res.send('Contact us at contact@example.com');
-});
+app.use(router);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const PORT = process.env.PORT || 3000;
 
 // Starting the server
 app.listen(PORT, () => {
