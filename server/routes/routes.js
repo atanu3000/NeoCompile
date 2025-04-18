@@ -1,17 +1,13 @@
 // Import Libraries
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = new Router();
 
 // Import Controllers
-const codeController = require("");
-const explanationController = require("");
+import { push_code, explain_code } from "../controllers/controller.js";
 
 // Code Routes
-router.post("/runCode", codeController.run_code);
-//Extra route if needed
-// router.post("/compileCode", codeController.compile_code);
+router.post("/runCode", push_code);
+router.post("/getExplanation", explain_code);
 
-// Explanation Routes
-router.post("/getExplanation", explanationController.get_explanation);
 // Exports
-module.exports = router;
+export default router;
