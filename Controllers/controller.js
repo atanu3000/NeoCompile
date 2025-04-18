@@ -4,10 +4,9 @@ import { GoogleGenAI } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
 let language = "python";
+// Going to be dynamic
 let code = `
-    import numpy as np
-    a = np.arange(0, 10, 2)
-    print(a)
+print("Hello world")
 `;
 
 
