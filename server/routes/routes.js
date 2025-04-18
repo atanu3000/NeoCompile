@@ -8,7 +8,8 @@ const explanationController = require("");
 
 // Code Routes
 router.post("/runCode", codeController.run_code);
-router.post("/compileCode", codeController.compile_code);
+//Extra route if needed
+// router.post("/compileCode", codeController.compile_code);
 
 // Explanation Routes
 router.post("/getExplanation", explanationController.get_explanation);
