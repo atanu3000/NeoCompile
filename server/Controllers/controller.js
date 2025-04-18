@@ -13,9 +13,9 @@ let code = `
 
 export const push_code = async (req, res) => {
     try {
-        // const { code, language } = req.body;
+        const { code, language } = req.body;
         console.log(req.body);
-
+        
 
         if (!code || !language) {
             return res.status(400).json(new ApiResponse(400, null, "Code and language are required"));
@@ -38,8 +38,8 @@ export const push_code = async (req, res) => {
         // console.log("Output: ", response.text);
         return res.status(200).json(new ApiResponse(200, response.text, "Code compiled successfully"));
     } catch (error) {
-        // console.log(error);
-        return res.status(500).json(new ApiResponse(500, null, "Internal server error"));
+        console.log(error);
+        return res.status(500).json(new ApiResponse(500, error, "Internal server error"));
 
     }
 }
@@ -63,8 +63,8 @@ export const explain_code = async (req, res) => {
         // console.log("Explanation: ", response.text);
         return res.status(200).json(new ApiResponse(200, response.text, "Code pushed successfully"));
     } catch (error) {
-        // console.log(error);
-        return res.status(500).json(new ApiResponse(500, null, "Internal server error"));
+        console.log(error);
+        return res.status(500).json(new ApiResponse(500, error, "Internal server error"));
 
     }
 }
