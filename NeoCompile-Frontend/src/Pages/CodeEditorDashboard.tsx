@@ -5,17 +5,32 @@ import OutputPanel from '@/components/CodeEditorComponents/OutputPanel';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from "lucide-react";
+import axios from 'axios';
 
 const CodeEditorDashboard: React.FC = () => {
     const [selectedLanguage, setSelectedLanguage] = useState<string>('javascript');
-    const [currentCode, setCurrentCode] = useState('');
-    const [explanation, setExplanation] = useState('');
+    const [currentCode, setCurrentCode] = useState<string>('');
+    const [output, setOutput] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const handleAnalyze = () => {
-        // For now, we'll just set a placeholder explanation
-        // In a real implementation, this would call an AI service
-        setExplanation("This is a sample code explanation. To get real AI explanations, you'll need to connect to a backend service.");
-    };
+    const handleCodeRun = () => {
+        try {
+            setLoading(true);
+            axios.post(import.meta.env.VITE_CODE_COMPILE_API, {
+                code: currentCode,
+                language: selectedLanguage
+            }).then(res => {
+                setLoading(false);
+                setOutput(res.data.data);
+            }).catch(err => {
+                setLoading(false);
+                console.error(err);
+            });
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        }
+    }
 
     return (
         <>
@@ -33,7 +48,7 @@ const CodeEditorDashboard: React.FC = () => {
                             </motion.span>
                         </div>
                         <div className="flex items-center gap-4">
-                            <Button size={'lg'} className='text-lg font-medium bg-violet-600'>Run</Button>
+                            <Button onClick={handleCodeRun} size={'lg'} className='text-lg font-medium bg-violet-600'>Run</Button>
                             <Button className="bg-violet-600 text-lg font-medium flex items-center gap-2">
                                 <Sparkles className="size-4" />
                                 Analyze Code
@@ -53,9 +68,8 @@ const CodeEditorDashboard: React.FC = () => {
                     onCodeChange={setCurrentCode}
                 />
                 <OutputPanel
-                    code={currentCode}
-                    onAnalyze={handleAnalyze}
-                    explanation={explanation}
+                    loading={loading}
+                    output={output}
                 />
             </div>
         </>

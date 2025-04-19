@@ -37,6 +37,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ language, onCodeChange }) => {
 
     useEffect(() => {
         setCode(getDefaultCode(language));
+        onCodeChange(getDefaultCode(language));
     }, [language]);
 
     const handleEditorChange = (value: string | undefined) => {

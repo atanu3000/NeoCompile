@@ -2,12 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 interface OutputPanelProps {
-    code: string;
-    onAnalyze: () => void;
-    explanation: string;
+    output: string;
+    loading: boolean;
 }
 
-const OutputPanel: React.FC<OutputPanelProps> = ({ code, onAnalyze, explanation }) => {
+const OutputPanel: React.FC<OutputPanelProps> = ({ output, loading }) => {
     return (
         <motion.div
             initial={{ x: 20, opacity: 0 }}
@@ -18,7 +17,15 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ code, onAnalyze, explanation 
                 <div className="flex-1 mt-1">
                     <h3 className="text-lg font-medium text-gray-400 mb-2">Output</h3>
                     <div className="bg-gray-800 p-4 rounded-lg text-sm text-gray-200 min-h-[200px]">
-                        {explanation || "enter your name :"}
+                        {loading ? (
+                            <div className='w-full items-center justify-center'>
+                                <div className="loader"></div>
+                            </div>
+                        ) : (
+                            <div>
+                                {output || "Your code output here"}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
