@@ -13,7 +13,7 @@ print("Hello world")
 export const push_code = async (req, res) => {
     try {
         // const { code, language } = req.body;
-        console.log(req.body);
+        console.log(req.headers);
 
 
         if (!code || !language) {
