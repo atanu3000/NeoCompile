@@ -1,21 +1,9 @@
 import { ApiResponse } from "../Utils/ApiResponse.js"
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
-
-let language = "python";
-let code = `
-    import numpy as np
-    a = np.arange(0, 10, 2)
-    print(a)
-`;
-
-
 export const push_code = async (req, res) => {
     try {
         const { code, language } = req.body;
-        console.log(req.body);
-        
 
         if (!code || !language) {
             return res.status(400).json(new ApiResponse(400, null, "Code and language are required"));
@@ -30,12 +18,12 @@ export const push_code = async (req, res) => {
             You should not return any other text or explanation.
             Just return the exact output nothing else.`
 
-
+        const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
         const response = await ai.models.generateContent({
             model: "gemini-2.0-flash",
             contents: promt1,
         });
-        // console.log("Output: ", response.text);
+
         return res.status(200).json(new ApiResponse(200, response.text, "Code compiled successfully"));
     } catch (error) {
         console.log(error);
@@ -47,6 +35,11 @@ export const push_code = async (req, res) => {
 export const explain_code = async (req, res) => {
     try {
         const { code, language } = req.body;
+
+        if (!code || !language) {
+            return res.status(400).json(new ApiResponse(400, null, "Code and language are required"));
+        }
+
         const promt2 = `
             You are a code explainer. Your task is to explain the provided code snippet in detail.
             The input will be a programming language and a code snippet.
@@ -55,12 +48,12 @@ export const explain_code = async (req, res) => {
             code: ${code}
             you have to return only the explanation in a breakdown manner but not too much lengthy.`
 
-
+        const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
         const response = await ai.models.generateContent({
             model: "gemini-2.0-flash",
             contents: promt2,
         });
-        // console.log("Explanation: ", response.text);
+
         return res.status(200).json(new ApiResponse(200, response.text, "Code pushed successfully"));
     } catch (error) {
         console.log(error);
