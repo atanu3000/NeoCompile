@@ -4,6 +4,11 @@ import dotenv from 'dotenv';
 // Environment Variables
 dotenv.config();
 
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
