@@ -4,14 +4,19 @@ import CodeEditor from '@/components/CodeEditorComponents/CodeEditor';
 import OutputPanel from '@/components/CodeEditorComponents/OutputPanel';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Play } from "lucide-react";
 import axios from 'axios';
+import ExplanationPanel from '@/components/CodeEditorComponents/ExplanationPanel';
 
 const CodeEditorDashboard: React.FC = () => {
     const [selectedLanguage, setSelectedLanguage] = useState<string>('javascript');
     const [currentCode, setCurrentCode] = useState<string>('');
     const [output, setOutput] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
+    const [explanation, setExplanation] = useState<string>('');
+    const [explanationLoading, setExplanationLoading] = useState<boolean>(false);
+    const [animating, setIsanimating] = useState<boolean>(false);
 
     const handleCodeRun = () => {
         try {
@@ -32,6 +37,27 @@ const CodeEditorDashboard: React.FC = () => {
         }
     }
 
+    const handleExplanationCode = () => {
+        setIsSheetOpen(true);
+        try {
+            setExplanationLoading(true);
+            axios.post(import.meta.env.VITE_CODE_EXPLANATION_API, {
+                code: currentCode,
+                language: selectedLanguage
+            }).then(res => {
+                setExplanationLoading(false);
+                setExplanation(res.data.data);
+                setIsanimating(true);
+            }).catch(err => {
+                setExplanationLoading(false);
+                console.error(err);
+            });
+        } catch (error) {
+            console.error(error);
+            setExplanationLoading(false);
+        }
+    }
+
     return (
         <>
             <motion.header
@@ -48,10 +74,10 @@ const CodeEditorDashboard: React.FC = () => {
                             </motion.span>
                         </div>
                         <div className="flex items-center gap-4">
-                            <Button onClick={handleCodeRun} size={'lg'} className='text-lg font-medium bg-violet-600'>Run</Button>
-                            <Button className="bg-violet-600 text-lg font-medium flex items-center gap-2">
+                            <Button onClick={handleCodeRun} size={'lg'} className='text-base font-medium bg-violet-600'><Play />Run Code</Button>
+                            <Button onClick={handleExplanationCode} className="bg-slate-100 text-slate-950 hover:bg-slate-200 text-base font-medium flex items-center gap-2">
                                 <Sparkles className="size-4" />
-                                Analyze Code
+                                Explain Code
                                 <ArrowRight className="size-4" />
                             </Button>
                         </div>
@@ -70,6 +96,13 @@ const CodeEditorDashboard: React.FC = () => {
                 <OutputPanel
                     loading={loading}
                     output={output}
+                />
+                <ExplanationPanel
+                    isSheetOpen={isSheetOpen}
+                    setIsSheetOpen={setIsSheetOpen}
+                    explanation={explanation}
+                    explanationLoading={explanationLoading}
+                    isAnimating={animating}
                 />
             </div>
         </>
