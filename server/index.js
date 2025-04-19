@@ -9,11 +9,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 import router from './routes/routes.js';
-app.use(router);
+app.use("/api", router);
 
 const PORT = process.env.PORT || 3000;
 
 // Starting the server
 app.listen(PORT, () => {
-  console.log(`Server Started http://localhost:${PORT}`);
+  console.log(`Server Started http://localhost:${PORT}/api`);
 });
