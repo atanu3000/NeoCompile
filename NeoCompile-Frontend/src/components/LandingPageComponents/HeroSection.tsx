@@ -3,8 +3,15 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { fadeIn, fadeInUp, staggerContainer, typingContainer, typingText } from '@/lib/animations';
 import CodeDemo from './CodeDemo';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
+    const navigate = useNavigate();
+
+    const gotoEditor = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        navigate('code-editor');
+    }
     return (
         <section className="relative min-h-screen flex items-center pt-16">
             <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
@@ -54,10 +61,10 @@ const HeroSection: React.FC = () => {
                             className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 mb-8"
                             variants={fadeInUp}
                         >
-                            <Button className="text-lg px-8 py-6 cursor-pointer" size="lg">
+                            <Button onClick={gotoEditor} className="text-lg px-8 py-6 cursor-pointer" size="lg">
                                 Get Started
                             </Button>
-                            <Button variant="outline" className="text-lg px-8 py-6 cursor-pointer" size="lg">
+                            <Button onClick={gotoEditor} variant="outline" className="text-lg px-8 py-6 cursor-pointer" size="lg">
                                 Watch Demo
                             </Button>
                         </motion.div>
