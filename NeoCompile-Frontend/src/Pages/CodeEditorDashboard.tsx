@@ -16,7 +16,6 @@ const CodeEditorDashboard: React.FC = () => {
     const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
     const [explanation, setExplanation] = useState<string>('');
     const [explanationLoading, setExplanationLoading] = useState<boolean>(false);
-    const [animating, setIsanimating] = useState<boolean>(false);
 
     const handleCodeRun = () => {
         try {
@@ -47,7 +46,6 @@ const CodeEditorDashboard: React.FC = () => {
             }).then(res => {
                 setExplanationLoading(false);
                 setExplanation(res.data.data);
-                setIsanimating(true);
             }).catch(err => {
                 setExplanationLoading(false);
                 console.error(err);
@@ -102,7 +100,6 @@ const CodeEditorDashboard: React.FC = () => {
                     setIsSheetOpen={setIsSheetOpen}
                     explanation={explanation}
                     explanationLoading={explanationLoading}
-                    isAnimating={animating}
                 />
             </div>
         </>
