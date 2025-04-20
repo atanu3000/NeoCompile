@@ -1,6 +1,8 @@
 # NeoCompile
 We're trying to build something new named NeoCompile. It is a AI powered compiler which is capable to run multiple languages.
 
+![Screenshot 2025-04-20 131129](https://github.com/user-attachments/assets/8443b384-fcd8-4495-aff8-2d1c8a437bda)
+
 ## Tech stack 
 
 ### Frontend
