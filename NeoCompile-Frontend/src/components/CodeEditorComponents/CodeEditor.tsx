@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Editor from '@monaco-editor/react';
+import { useContext } from 'react';
+import { AppContext } from '@/Context/AppContextProvider';
 
 interface CodeEditorProps {
     language: string;
@@ -9,6 +11,13 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ language, onCodeChange }) => {
     const [code, setCode] = useState<string>('');
+    const context = useContext(AppContext);
+
+    if (!context) {
+        throw new Error("Must be used within AppContextProvider");
+    }
+
+    const { responseMsg, generateStatus } = context;
 
     const getDefaultCode = (lang: string) => {
         switch (lang) {
@@ -46,6 +55,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ language, onCodeChange }) => {
             onCodeChange(value);
         }
     };
+
+    useEffect(() => {
+        if (generateStatus) {
+            setCode(responseMsg);
+            onCodeChange(responseMsg);
+        }
+    }, [generateStatus, responseMsg]);
 
     return (
         <motion.div

@@ -1,12 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
 
 interface OutputPanelProps {
     output: string;
     loading: boolean;
+    explanation: string;
+    explanationLoading: boolean;
 }
 
-const OutputPanel: React.FC<OutputPanelProps> = ({ output, loading }) => {
+const OutputPanel: React.FC<OutputPanelProps> = ({ output, loading, explanation, explanationLoading }) => {
     return (
         <motion.div
             initial={{ x: 20, opacity: 0 }}
@@ -28,6 +33,23 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ output, loading }) => {
                         )}
                     </div>
                 </div>
+            </div>
+            <div className="h-96 flex flex-col gap-4 pt-4">
+                <h3 className="text-lg font-medium text-gray-100">Code Explanation</h3>
+                {explanationLoading ? (
+                    <div className="flex items-center justify-center bg-gray-800 p-4 rounded-lg text-sm text-gray-200">
+                        <div className="loader"></div>
+                    </div>
+                ) : (
+                    <div className="w-full bg-gray-800 p-4 rounded-lg text-sm text-gray-200 overflow-y-auto break-words whitespace-pre-wrap">
+                        <ReactMarkdown
+                            rehypePlugins={[rehypeRaw]}
+                            remarkPlugins={[remarkGfm]}
+                        >
+                            {explanation || "Your Code Explanation Here"}
+                        </ReactMarkdown>
+                    </div>
+                )}
             </div>
         </motion.div>
     );

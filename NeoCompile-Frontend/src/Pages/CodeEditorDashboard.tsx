@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LanguageSelector from '@/components/CodeEditorComponents/LanguageSelector';
 import CodeEditor from '@/components/CodeEditorComponents/CodeEditor';
 import OutputPanel from '@/components/CodeEditorComponents/OutputPanel';
@@ -6,16 +6,26 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Play } from "lucide-react";
 import axios from 'axios';
-import ExplanationPanel from '@/components/CodeEditorComponents/ExplanationPanel';
+import CodeGeneratorPanel from '@/components/CodeEditorComponents/CodeGeneratorPanel';
+import { useContext } from 'react';
+import { AppContext } from '@/Context/AppContextProvider';
 
 const CodeEditorDashboard: React.FC = () => {
     const [selectedLanguage, setSelectedLanguage] = useState<string>('javascript');
     const [currentCode, setCurrentCode] = useState<string>('');
     const [output, setOutput] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
-    const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
     const [explanation, setExplanation] = useState<string>('');
     const [explanationLoading, setExplanationLoading] = useState<boolean>(false);
+    const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
+
+    const context = useContext(AppContext);
+
+    if (!context) {
+        throw new Error("Must be used within AppContextProvider");
+    }
+
+    const { setCode, setLanguage, responseMsg, generateStatus } = context;
 
     const handleCodeRun = () => {
         try {
@@ -34,10 +44,6 @@ const CodeEditorDashboard: React.FC = () => {
             console.error(error);
             setLoading(false);
         }
-    }
-
-    const handleExplanationCode = () => {
-        setIsSheetOpen(true);
         try {
             setExplanationLoading(true);
             axios.post(import.meta.env.VITE_CODE_EXPLANATION_API, {
@@ -56,6 +62,18 @@ const CodeEditorDashboard: React.FC = () => {
         }
     }
 
+    const handleGenerateCode = async () => {
+        setIsSheetOpen(true);
+        setLanguage(selectedLanguage);
+        setCode(currentCode);
+    }
+
+    useEffect(() => {
+        if (generateStatus) {
+            setCurrentCode(responseMsg);
+        }
+    }, [generateStatus, responseMsg]);
+
     return (
         <>
             <motion.header
@@ -73,9 +91,9 @@ const CodeEditorDashboard: React.FC = () => {
                         </div>
                         <div className="flex items-center gap-4">
                             <Button onClick={handleCodeRun} size={'lg'} className='text-base font-medium bg-violet-600'><Play />Run Code</Button>
-                            <Button onClick={handleExplanationCode} className="bg-slate-100 text-slate-950 hover:bg-slate-200 text-base font-medium flex items-center gap-2">
+                            <Button onClick={handleGenerateCode} className="bg-slate-100 text-slate-950 hover:bg-slate-200 text-base font-medium flex items-center gap-2">
                                 <Sparkles className="size-4" />
-                                Explain Code
+                                Generate Code
                                 <ArrowRight className="size-4" />
                             </Button>
                         </div>
@@ -94,12 +112,12 @@ const CodeEditorDashboard: React.FC = () => {
                 <OutputPanel
                     loading={loading}
                     output={output}
-                />
-                <ExplanationPanel
-                    isSheetOpen={isSheetOpen}
-                    setIsSheetOpen={setIsSheetOpen}
                     explanation={explanation}
                     explanationLoading={explanationLoading}
+                />
+                <CodeGeneratorPanel
+                    isSheetOpen={isSheetOpen}
+                    setIsSheetOpen={setIsSheetOpen}
                 />
             </div>
         </>

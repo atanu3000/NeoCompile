@@ -145,3 +145,8 @@
     left: calc(100% + 20px);
   }
 }
+
+.markdown code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
